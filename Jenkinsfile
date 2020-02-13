@@ -1,6 +1,27 @@
 #! groovy
 pipeline {
   agent none
+  parameters {
+    choice(
+      name: "Environment",
+      choices: ['staging', 'prod'],
+      description : "Release Scope for basic-auth. Deployment for dev needs to be done manually ",
+    )
+    choice(
+      name: "Version",
+      choices: ['Major', 'Minor', 'Patch'],
+      description : "SemVer-String",
+    )
+  }
+  environment {
+    stack_prefix = "${params.Environment == 'prod' ? 'xdn' : 'xdn-staging'}"
+    stack_environment = "${params.Environment == 'prod' ? 'prod' : 'stage'}"
+    builds_to_keep = "${params.Environment == 'prod' ? '5' : '1'}"
+  }
+  options {
+        buildDiscarder(logRotator(numToKeepStr: env.builds_to_keep))
+        disableConcurrentBuilds()
+  }
   stages {
     stage('Build') {
       agent {
