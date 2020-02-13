@@ -5,7 +5,7 @@ pipeline {
     stage('Build') {
       agent {
         docker {
-          image 'python:3-alpine'
+          image 'python:2-alpine'
         }
       }
       steps {
@@ -30,7 +30,7 @@ pipeline {
     stage('Deliver') {
       agent {
         docker {
-          image 'cdrx/pyinstaller-linux:python3'
+          image 'cdrx/pyinstaller-linux:python2'
         }
       }
       steps {
